@@ -13,10 +13,18 @@ Basic Idea of the Approach
 
 def FloydWarshall(graph):
     # Initialize matrix with zeros
-    D = [[0 for i in range(len(graph))] for j in range(len(graph))]
+    dist = [[0 for x in range(V)] for y in range(V)]
 
+    for i in range (0, V):
+        for j in range (0, V):
+            dist[i][j] = graph[i][j]
+    
+    for k in range (0, V):
+        for i in range (0, V):
+            for j in range (0, V):
+                dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])
 
-
+    return dist
 
 ### Test 01:
 INFINITY, V = 99999, 4
