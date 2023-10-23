@@ -1,0 +1,91 @@
+# import sys
+# sys.path.append('D:\Semester 7\CS4522 - Advanced Algorithms\Code\L11_Multi_Threaded_Algorithms_II\Divide_and_conquer.py')
+# from ...L11_Multi_Threaded_Algorithms_II.Divide_and_conquer import *
+
+#from Divide_and_conquer import *
+#from ....Code.L11MultiThreadedAlgorithms2.L11 - Multi Threaded Algorithms II.Divide_and_conquer import *
+
+def divide_matrix(A, n):
+    # Divide matrix A into n/2 x n/2 submatrices
+    A11 = [[0 for p in range(n//2)] for q in range(n//2)]
+    A12 = [[0 for p in range(n//2)] for q in range(n//2)]
+    A21 = [[0 for p in range(n//2)] for q in range(n//2)]
+    A22 = [[0 for p in range(n//2)] for q in range(n//2)]
+    for i in range(n//2):
+        for j in range(n//2):
+            A11[i][j] = A[i][j]
+            A12[i][j] = A[i][n//2+j]
+            A21[i][j] = A[n//2+i][j]
+            A22[i][j] = A[n//2+i][n//2+j]
+    return A11, A12, A21, A22
+
+def add_matrices(A, B, n):
+    # Add matrices A and B element-wise
+    C = [[0 for p in range(n)] for q in range(n)]
+    for i in range(n):
+        for j in range(n):
+            C[i][j] = A[i][j] + B[i][j]
+    return C
+
+
+
+''' P-Matrix-Add-Recursive(C, A, B):
+	n = A.rows
+	if n == 1:	# base case
+		C11 = A11 + B11 
+	else:
+		Let T be a new nXn matrix
+		Partition A, B, C and T into n/2Xn/2 submatrices A11, A12, A21, A22, B11, B12, B21, B22, C11, C12, C21, C22 and T11, T12, T21, T22 respectively
+        spawn P-Matrix-Add-Recursive(C11, A11, B11)
+        spawn P-Matrix-Add-Recursive(C12, A12, B12)
+		spawn P-Matrix-Add-Recursive(C21, A21, B21)
+        spawn P-Matrix-Add-Recursive(C22, A22, B22)
+		spawn P-Matrix-Add-Recursive(T11, A11, B11)
+        spawn P-Matrix-Add-Recursive(T12, A12, B12)
+		spawn P-Matrix-Add-Recursive(T21, A21, B21)
+        P-Matrix-Add-Recursive(T22, A22, B22)
+        sync
+        parallel for i = 1 to n
+        	parallel for j = 1 to n:
+        		Cij = Cij + Tij
+    return C
+'''
+
+def P_matrix_add_recursive(C, A, B):
+    n = A.__len__()
+    if n == 1:  # base case
+        C[0][0] = A[0][0] + B[0][0]
+    else:
+        T = [[0 for j in range(n)] for i in range(n)]
+        A11, A12, A21, A22 = divide_matrix(A, n)
+        B11, B12, B21, B22 = divide_matrix(B, n)
+        C11, C12, C21, C22 = divide_matrix(C, n)
+        T11, T12, T21, T22 = divide_matrix(T, n)
+        P_matrix_add_recursive(C11, A11, B11)
+        P_matrix_add_recursive(C12, A12, B12)
+        P_matrix_add_recursive(C21, A21, B21)
+        P_matrix_add_recursive(C22, A22, B22)
+        P_matrix_add_recursive(T11, A11, B11)
+        P_matrix_add_recursive(T12, A12, B12)
+        P_matrix_add_recursive(T21, A21, B21)
+        P_matrix_add_recursive(T22, A22, B22)
+        add_matrices(C, T, n)
+    return C
+
+X = [[1, 0, 1, 0],
+     [0, 1, 0, 1],
+     [1, 0, 1, 0],
+     [0, 1, 0, 1]]
+
+Y = [[2, 0, 0, 0],
+     [0, 2, 0, 0],
+     [0, 0, 2, 0],
+     [0, 0, 0, 2]]
+
+temp = divide_matrix(Y, 4)
+print(temp)
+print(temp.__len__())
+ 
+Z = [[0 for j in range(4)] for i in range(4)]
+Z = P_matrix_add_recursive(Z, X, Y)
+print(Z) # [[3, 0, 1, 0], [0, 3, 0, 1], [1, 0, 3, 0], [0, 1, 0, 3]]

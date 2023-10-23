@@ -1,4 +1,4 @@
-def devide_matrix(A, n):
+def divide_matrix(A, n):
     # Divide matrix A into n/2 x n/2 submatrices
     A11 = [[0 for p in range(n//2)] for q in range(n//2)]
     A12 = [[0 for p in range(n//2)] for q in range(n//2)]
@@ -32,9 +32,9 @@ def divide_and_conquer(A, B, n):
 
     else: 
         # Divide A, B, and C into n/2 x n/2 submatrices
-        A11, A12, A21, A22 = devide_matrix(A, n)
-        B11, B12, B21, B22 = devide_matrix(B, n)
-        C11, C12, C21, C22 = devide_matrix(C, n)
+        A11, A12, A21, A22 = divide_matrix(A, n)
+        B11, B12, B21, B22 = divide_matrix(B, n)
+        C11, C12, C21, C22 = divide_matrix(C, n)
 
         # Recursively compute the 8 submatrices
         C11 = add_matrices(divide_and_conquer(A11, B11, n//2), divide_and_conquer(A12, B21, n//2), n//2)
